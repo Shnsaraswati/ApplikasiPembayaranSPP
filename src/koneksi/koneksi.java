@@ -10,11 +10,21 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
+
+// import interface untuk implements
+import Interface.interface_koneksi;
 /**
  *
  * @author Global Store
  */
-public class koneksi {
+
+/**
+ * didalam class koneksi dia implements interface_koneksi yang maksudnya
+ * class koneksi ini dia harus mengimplementasikan method method yang telah di buat di interface_koneksi
+ * seperti dibawah di interface_koneksi dia mempunya method dengan nama connect() dengan return connection
+ * dan di class koneksi dia juga harus punya method connect() dengan return nilai Connection
+ */
+public class koneksi implements interface_koneksi {
      private Connection koneksi; // membuat variabel koneksi untuk mengambil koneksi
      
      // membuat function dengan nama connect untuk mengkoneksikan database 

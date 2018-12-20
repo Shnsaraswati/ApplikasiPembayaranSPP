@@ -13,11 +13,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
 
+// import interface untuk implements
+import Interface.interface_crud;
+
 /*
     * class crud ini adalah class inheritance dari class koneksi dimana class ini akan digunakan untuk update dan delete
+    * didalam class crud selain inheritance kepada koneksi dia juga implements terhadap interface_crud
+    * dimana si class crud ini dia harus membuat method yang sama persis yang ada di interface_crud
 */
 
-public class crud extends koneksi{
+public class crud extends koneksi implements interface_crud {
     /**
      * function ini digunakan untuk update sebuah table yang ada didatabase dengan parameter :
      * String nama_table : diisi dengan nama table yang mau diisi
