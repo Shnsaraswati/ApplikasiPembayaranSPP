@@ -17,7 +17,9 @@ import koneksi.koneksi;
 import koneksi.crud;
 import javax.swing.table.DefaultTableModel;
 
-public class RiwayatPembayaran extends javax.swing.JFrame {
+import Interface.interface_riwayat;
+
+public class RiwayatPembayaran extends javax.swing.JFrame implements interface_riwayat {
 
     /** Creates new form RiwayatPembayaran */
     Connection conn = new koneksi().connect();
@@ -151,8 +153,8 @@ public class RiwayatPembayaran extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addContainerGap(681, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(layout.createSequentialGroup()

@@ -16,12 +16,13 @@ import java.util.Date;
 import java.util.ArrayList;
 
 import koneksi.koneksi;
+import Interface.interface_BayarSPP;
 
 /**
  *
  * @author Global Store
  */
-public class BayarSPP extends javax.swing.JFrame {
+public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
 
     public Connection conn = new koneksi().connect();
     ArrayList<String> data = new ArrayList<>();
