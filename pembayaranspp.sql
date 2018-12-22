@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 15, 2018 at 02:12 PM
+-- Generation Time: Dec 22, 2018 at 02:37 PM
 -- Server version: 10.1.25-MariaDB
 -- PHP Version: 5.6.31
 
@@ -47,6 +47,35 @@ INSERT INTO `admin` (`IdAdmin`, `Nama`, `Alamat`, `No_Telp`, `password`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `bulan`
+--
+
+CREATE TABLE `bulan` (
+  `id_bulan` int(11) NOT NULL,
+  `nama_bulan` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `bulan`
+--
+
+INSERT INTO `bulan` (`id_bulan`, `nama_bulan`) VALUES
+(1, 'Januari'),
+(2, 'Februari'),
+(3, 'Maret'),
+(4, 'April'),
+(5, 'Mei'),
+(6, 'Juni'),
+(7, 'Juli'),
+(8, 'Agustus'),
+(9, 'September'),
+(10, 'Oktober'),
+(11, 'November'),
+(12, 'Desember');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `data_murid`
 --
 
@@ -76,40 +105,12 @@ INSERT INTO `data_murid` (`NIS`, `Nama`, `Kelas`, `Kota_Kelahiran`, `TTL`, `Alam
 CREATE TABLE `pembayaran` (
   `id_pembayaran` int(11) NOT NULL,
   `NIS` varchar(30) NOT NULL,
-  `Nama` varchar(20) NOT NULL,
   `kelas` varchar(20) NOT NULL,
   `Semester` varchar(20) NOT NULL,
   `tanggal` varchar(50) NOT NULL,
-  `pembayaran_untuk_berapa_bulan` varchar(10) NOT NULL,
+  `bulan` varchar(20) NOT NULL,
   `totalbayar` int(50) NOT NULL,
   `uangbayar` int(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `pembayaran`
---
-
-INSERT INTO `pembayaran` (`id_pembayaran`, `NIS`, `Nama`, `kelas`, `Semester`, `tanggal`, `pembayaran_untuk_berapa_bulan`, `totalbayar`, `uangbayar`) VALUES
-(1, '1910001', 'Cantika Sari', 'VII', 'Genap', '15/12/2018', '2', 300000, 300000);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `riwayat_pembayaran`
---
-
-CREATE TABLE `riwayat_pembayaran` (
-  `IdAdmin` varchar(30) NOT NULL,
-  `NIS` varchar(30) NOT NULL,
-  `Nama` varchar(20) NOT NULL,
-  `kelas` varchar(20) NOT NULL,
-  `Semester` varchar(20) NOT NULL,
-  `tanggal` date NOT NULL,
-  `uangspp` int(50) NOT NULL,
-  `pembayaran_untuk_berepa_bulan` varchar(10) NOT NULL,
-  `totalbayar` int(50) NOT NULL,
-  `uangbayar` int(50) NOT NULL,
-  `uangkembali` int(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -121,6 +122,12 @@ CREATE TABLE `riwayat_pembayaran` (
 --
 ALTER TABLE `admin`
   ADD PRIMARY KEY (`IdAdmin`);
+
+--
+-- Indexes for table `bulan`
+--
+ALTER TABLE `bulan`
+  ADD PRIMARY KEY (`id_bulan`);
 
 --
 -- Indexes for table `data_murid`
@@ -136,21 +143,19 @@ ALTER TABLE `pembayaran`
   ADD KEY `NIS` (`NIS`);
 
 --
--- Indexes for table `riwayat_pembayaran`
---
-ALTER TABLE `riwayat_pembayaran`
-  ADD KEY `NIS` (`NIS`),
-  ADD KEY `IdAdmin` (`IdAdmin`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
+-- AUTO_INCREMENT for table `bulan`
+--
+ALTER TABLE `bulan`
+  MODIFY `id_bulan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+--
 -- AUTO_INCREMENT for table `pembayaran`
 --
 ALTER TABLE `pembayaran`
-  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
 --
@@ -160,13 +165,6 @@ ALTER TABLE `pembayaran`
 --
 ALTER TABLE `pembayaran`
   ADD CONSTRAINT `pembayaran_ibfk_1` FOREIGN KEY (`NIS`) REFERENCES `data_murid` (`NIS`);
-
---
--- Constraints for table `riwayat_pembayaran`
---
-ALTER TABLE `riwayat_pembayaran`
-  ADD CONSTRAINT `riwayat_pembayaran_ibfk_1` FOREIGN KEY (`NIS`) REFERENCES `data_murid` (`NIS`),
-  ADD CONSTRAINT `riwayat_pembayaran_ibfk_2` FOREIGN KEY (`IdAdmin`) REFERENCES `admin` (`IdAdmin`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
