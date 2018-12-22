@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 import koneksi.koneksi;
 import Interface.interface_BayarSPP;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  *
@@ -27,9 +29,11 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
     public Connection conn = new koneksi().connect();
     ArrayList<String> data = new ArrayList<>();
     int spp = 150000;
-
+    String[] bulan = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"};
+    ArrayList<String> bulanBayar = new ArrayList<>();
+    
     public void TotalBayar() {
-        String query = "SELECT (SUM(pembayaran_untuk_berapa_bulan) * SUM(uangspp)) as totalbayar FROM pembayaran where NIS=" + txtNIS.getText() + "";
+        String query = "SELECT (SUM(pembayaran_untuk_berapa_bulan) * SUM(uangspp)) as totalbayar FROM pembayaran where NIS=" + comboboxNIS.getSelectedItem().toString() + "";
         String totalbayar = "";
         try {
             Statement stmt = conn.createStatement();
@@ -47,12 +51,115 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
     }
 
     public void uangkembali() {
-        String query = "SELECT (SUM(uangbayar) - SUM(totalbayar)) as uangkembali FROM pembayaran where NIS=" + txtNIS.getText() + "";
+        String query = "SELECT (SUM(uangbayar) - SUM(totalbayar)) as uangkembali FROM pembayaran where NIS=" + comboboxNIS.getSelectedItem().toString() + "";
         String uangkembali = "";
+    }
+
+    public void getNIS() {
+        String query = "SELECT NIS from data_murid";
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet hasil = stmt.executeQuery(query);
+            while (hasil.next()) {
+                comboboxNIS.addItem(hasil.getString("NIS"));
+            }
+        } catch (Exception e) {
+            System.out.println("Error : " + e);
+        }
+    }
+
+    public void findSiswa() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyy"); //membuat format untuk tanggal
+        Date date = new Date(); // membuat date untuk mengambil tanggal hari ini
+        String query = "SELECT * from data_murid where NIS=" + comboboxNIS.getSelectedItem().toString() + "";
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet hasil = stmt.executeQuery(query);
+            if (hasil.next()) {
+                jLabelNama.setText(hasil.getString("nama"));
+                txtKelas.setText(hasil.getString("kelas"));
+                tanggalBayar.setText(dateFormat.format(date).toString());
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    public void getBulan() {
+        String query = "SELECT * from bulan";
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet hasil = stmt.executeQuery(query);
+            while (hasil.next()) {
+                CbBulanBayar.addItem(hasil.getString("nama_bulan"));
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    public void getBelum() {
+        String query = "SELECT bulan from pembayaran where NIS=" + comboboxNIS.getSelectedItem().toString() + " AND semester='" + cbSemester.getSelectedItem().toString() + "'";
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet hasil = stmt.executeQuery(query);
+            CbBulanBayar.removeAllItems();
+            bulanBayar.clear();
+            while (hasil.next()) {                
+                bulanBayar.add(hasil.getString("bulan"));
+            }
+            int x = 0;
+            for(int i=x; i<bulanBayar.size(); i++)
+            {
+                if (bulanBayar.isEmpty()) {
+                    System.out.println("Kosong");
+                }
+                else
+                {
+                    if(bulan[i].equals(bulanBayar.get(i)))
+                    {
+                        System.out.println("Sama");
+                    }
+                    else if(bulan[i].equals(bulanBayar.lastIndexOf(i)))
+                    {
+                        System.out.println("Beda");
+                    }
+                }
+                x++;
+            }
+            
+            for (int i = x; i < bulan.length; i++) {
+                CbBulanBayar.addItem(bulan[i]);
+            }
+            
+        } catch (Exception e) {
+            System.out.println("Error : " + e);
+        }
+    }
+
+    public void getBelumBayar() {
+        String query = "SELECT nama_bulan FROM bulan, pembayaran pb WHERE pb.NIS = " + comboboxNIS.getSelectedItem().toString() + " AND pb.Semester = '" + cbSemester.getSelectedItem().toString() + "' AND pb.tanggal LIKE '%/2018%' AND pb.bulan != bulan.nama_bulan";
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet hasil = stmt.executeQuery(query);
+            CbBulanBayar.removeAllItems();
+            if (!hasil.next()) {
+//                System.out.println("Tidak ada bulan");
+                getBulan();
+            } else {
+//                System.out.println(hasil.getString("nama_bulan"));
+                do {
+                    CbBulanBayar.addItem(hasil.getString("nama_bulan"));
+                } while (hasil.next());
+            }
+        } catch (Exception e) {
+            System.out.println("Error : " + e);
+        }
     }
 
     public BayarSPP() {
         initComponents();
+        comboboxNIS.removeAllItems();
+        comboboxNIS.addItem("Pilih NIS : ");
+        getNIS();
         TotalBayar();
         uangkembali();
 
@@ -61,18 +168,25 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
         cbSemester.addItem("Genap");
 
         CbBulanBayar.removeAllItems();
-        CbBulanBayar.addItem("1");
-        CbBulanBayar.addItem("2");
-        CbBulanBayar.addItem("3");
-        CbBulanBayar.addItem("4");
-        CbBulanBayar.addItem("5");
-        CbBulanBayar.addItem("6");
-        CbBulanBayar.addItem("7");
-        CbBulanBayar.addItem("8");
-        CbBulanBayar.addItem("9");
-        CbBulanBayar.addItem("10");
-        CbBulanBayar.addItem("11");
-        CbBulanBayar.addItem("12");
+        getBulan();
+
+        comboboxNIS.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent ie) {
+                if (ie.getStateChange() == ItemEvent.SELECTED) {
+                    findSiswa();
+                    getBelum();
+                }
+            }
+        });
+        cbSemester.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent ie) {
+                if (ie.getStateChange() == ItemEvent.SELECTED) {
+                    getBelumBayar();
+                }
+            }
+        });
     }
 
     /**
@@ -92,7 +206,6 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         txtKelas = new javax.swing.JTextField();
-        txtNIS = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         cbSemester = new javax.swing.JComboBox<>();
         txtuangbayar = new javax.swing.JTextField();
@@ -103,11 +216,11 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
         lblUangkembali = new javax.swing.JLabel();
         CbBulanBayar = new javax.swing.JComboBox<>();
         tanggalBayar = new javax.swing.JLabel();
-        jButtonTampilkan = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jLabelSPP = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabelTotalBayar = new javax.swing.JLabel();
+        comboboxNIS = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -117,19 +230,13 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
 
         jLabel3.setText("Kelas             :");
 
-        jLabel4.setText("Pembayaran Untuk berapa Bulan :");
+        jLabel4.setText("Pembayaran untuk bulan :");
 
         jLabel5.setText("Uang Bayar   :");
 
         jLabel6.setText("Uang Kembali :");
 
         jLabel7.setText("Tanggal         :");
-
-        txtNIS.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNISActionPerformed(evt);
-            }
-        });
 
         jLabel8.setText("Semester       :");
 
@@ -160,18 +267,13 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
             }
         });
 
-        jButtonTampilkan.setText("TAMPILKAN");
-        jButtonTampilkan.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonTampilkanActionPerformed(evt);
-            }
-        });
-
         jLabel9.setText("Uang SPP/ Bulan :");
 
         jLabelSPP.setText("150000");
 
         jLabel11.setText("Total Bayar     :");
+
+        comboboxNIS.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -190,15 +292,15 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addComponent(jLabel2)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGap(18, 18, 18)
                                         .addComponent(jLabelNama, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addComponent(jLabel1)
                                         .addGap(18, 18, 18)
-                                        .addComponent(txtNIS, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(comboboxNIS, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -208,9 +310,7 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel3)
                                         .addGap(18, 18, 18)
-                                        .addComponent(txtKelas, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(40, 40, 40)
-                                        .addComponent(jButtonTampilkan))))
+                                        .addComponent(txtKelas, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -228,18 +328,18 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel9)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jLabelSPP, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel4)
                                         .addGap(18, 18, 18)
-                                        .addComponent(CbBulanBayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(CbBulanBayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel9)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabelSPP, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addGap(18, 18, 18)
                                 .addComponent(lblUangkembali, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 59, Short.MAX_VALUE)))
+                        .addGap(0, 169, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -247,13 +347,13 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtNIS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1)
+                        .addComponent(comboboxNIS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel3)
-                        .addComponent(txtKelas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButtonTampilkan)))
-                .addGap(16, 16, 16)
+                        .addComponent(txtKelas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(jLabelNama, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -276,7 +376,7 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel11)
-                        .addGap(0, 11, Short.MAX_VALUE))
+                        .addGap(0, 12, Short.MAX_VALUE))
                     .addComponent(jLabelTotalBayar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -293,10 +393,6 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtNISActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNISActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNISActionPerformed
-
     private void jButtonkembalikemenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonkembalikemenuActionPerformed
         new Menu().setVisible(true);
         this.setVisible(false);
@@ -312,8 +408,8 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
         if (bayar < 0) {
             JOptionPane.showMessageDialog(null, "Maaf Uang yang Anda berikan Kurang");
         } else {
-            int totalBulan = Integer.parseInt(CbBulanBayar.getSelectedItem().toString());
-            int totalBayar = spp * totalBulan;
+//            int totalBulan = Integer.parseInt(CbBulanBayar.getSelectedItem().toString());
+            int totalBayar = spp;
             int uangBayar = Integer.parseInt(txtuangbayar.getText());
             int uangKembali = uangBayar - totalBayar;
 
@@ -322,14 +418,13 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
             } else {
                 jLabelTotalBayar.setText(Integer.toString(totalBayar));
                 lblUangkembali.setText(Integer.toString(uangKembali));
-                String query = "INSERT INTO pembayaran(NIS,Nama,kelas,semester,tanggal,pembayaran_untuk_berapa_bulan,totalbayar,uangbayar) VALUES (?,?,?,?,?,?,?,?)";
+                String query = "INSERT INTO pembayaran(NIS,kelas,semester,tanggal,bulan,totalbayar,uangbayar) VALUES (?,?,?,?,?,?,?)";
                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyy HH:mm:ss");
                 Date date = new Date();
 
                 try {
                     data.clear();
-                    data.add(txtNIS.getText());
-                    data.add(jLabelNama.getText());
+                    data.add(comboboxNIS.getSelectedItem().toString());
                     data.add(txtKelas.getText());
                     data.add(cbSemester.getSelectedItem().toString());
                     data.add(tanggalBayar.getText());
@@ -358,25 +453,6 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
 
         }
     }//GEN-LAST:event_jButtonbayarActionPerformed
-
-    private void jButtonTampilkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTampilkanActionPerformed
-        // TODO add your handling code here:
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyy"); //membuat format untuk tanggal
-        Date date = new Date(); // membuat date untuk mengambil tanggal hari ini
-        String query = "SELECT * from data_murid where NIS=" + txtNIS.getText() + ""; //query
-
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet data = stmt.executeQuery(query);
-
-            if (data.next()) {
-                jLabelNama.setText(data.getString("Nama"));
-                txtKelas.setText(data.getString("Kelas"));
-                tanggalBayar.setText(dateFormat.format(date).toString());
-            }
-        } catch (Exception e) {
-        }
-    }//GEN-LAST:event_jButtonTampilkanActionPerformed
 
     private void cbSemesterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbSemesterActionPerformed
         // TODO add your handling code here:
@@ -420,7 +496,7 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CbBulanBayar;
     private javax.swing.JComboBox<String> cbSemester;
-    private javax.swing.JButton jButtonTampilkan;
+    private javax.swing.JComboBox<String> comboboxNIS;
     private javax.swing.JButton jButtonbayar;
     private javax.swing.JButton jButtonexit;
     private javax.swing.JButton jButtonkembalikemenu;
@@ -440,7 +516,6 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
     private javax.swing.JLabel lblUangkembali;
     private javax.swing.JLabel tanggalBayar;
     private javax.swing.JTextField txtKelas;
-    private javax.swing.JTextField txtNIS;
     private javax.swing.JTextField txtuangbayar;
     // End of variables declaration//GEN-END:variables
 }
