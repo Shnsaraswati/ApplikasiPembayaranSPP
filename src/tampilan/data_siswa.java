@@ -247,6 +247,9 @@ public class data_siswa extends javax.swing.JFrame {
             stmt.setString(4, txtKotaKel.getText());
             stmt.setString(5, txtTTL.getText());
             stmt.setString(6, txtAlamat.getText());
+            stmt.executeUpdate();
+            dataTable();
+            JOptionPane.showMessageDialog(null, "BERHASIL TAMBAH SISWA");
         } catch (Exception e) {
         }
     }//GEN-LAST:event_btnSimpanActionPerformed
@@ -281,6 +284,7 @@ public class data_siswa extends javax.swing.JFrame {
             stmt.setString(5, txtAlamat.getText());
             stmt.setString(6, txtNis.getText());
             stmt.executeUpdate();
+            dataTable();
             
             JOptionPane.showMessageDialog(null, "Berhasil Update Data");
         } catch (Exception e) {
@@ -295,6 +299,7 @@ public class data_siswa extends javax.swing.JFrame {
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, txtNis.getText());
             stmt.executeUpdate();
+            dataTable();
             
             JOptionPane.showMessageDialog(null, "BERHASIL DELETE DATA!");
         } catch (Exception e) {
