@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 22, 2018 at 02:37 PM
+-- Generation Time: Dec 25, 2018 at 02:37 PM
 -- Server version: 10.1.25-MariaDB
 -- PHP Version: 5.6.31
 
@@ -93,8 +93,8 @@ CREATE TABLE `data_murid` (
 --
 
 INSERT INTO `data_murid` (`NIS`, `Nama`, `Kelas`, `Kota_Kelahiran`, `TTL`, `Alamat`) VALUES
-('1910001', 'Cantika Sari', 'VII', 'Surabaya', '10 Januari 2005', 'Jalan Simpang BAlapan no 12'),
-('1910002', 'Irving Wahyudi', 'VIII', 'Bekasi', '11 Maret 2004', 'Jalan Tanjung Duren no 15');
+('1910001', 'Yuyin Madania Roizki', 'VII', 'Surabaya', '10 Januari 2005', 'Jalan Simpang BAlapan no 12'),
+('1910002', 'Shyellma Nabila', 'VIII', 'Bekasi', '11 Maret 2004', 'Jalan Tanjung Duren no 15');
 
 -- --------------------------------------------------------
 
@@ -112,6 +112,13 @@ CREATE TABLE `pembayaran` (
   `totalbayar` int(50) NOT NULL,
   `uangbayar` int(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `pembayaran`
+--
+
+INSERT INTO `pembayaran` (`id_pembayaran`, `NIS`, `kelas`, `Semester`, `tanggal`, `bulan`, `totalbayar`, `uangbayar`) VALUES
+(1, '1910001', 'VII', 'Ganjil', '25/12/2018', 'Januari', 150000, 150000);
 
 --
 -- Indexes for dumped tables
@@ -155,7 +162,7 @@ ALTER TABLE `bulan`
 -- AUTO_INCREMENT for table `pembayaran`
 --
 ALTER TABLE `pembayaran`
-  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- Constraints for dumped tables
 --
