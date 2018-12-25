@@ -27,7 +27,7 @@ public class RiwayatPembayaran extends javax.swing.JFrame implements interface_r
     DefaultTableModel tabmode;
     
     public void dataTable() {
-        Object[] baris = {"ID_Pembayaran","NIS","NAMA","SEMESTER","BANYAK BULAN","UANG BAYAR"};
+        Object[] baris = {"ID_Pembayaran","NIS","SEMESTER","BANYAK BULAN","UANG BAYAR"};
         tabmode = new DefaultTableModel(null, baris);
         tblRiwayat.setModel(tabmode);
         
@@ -41,20 +41,21 @@ public class RiwayatPembayaran extends javax.swing.JFrame implements interface_r
             {
                 String id = data.getString("id_pembayaran");
                 String nis = data.getString("NIS");
-                String nama = data.getString("Nama");
                 String kelas = data.getString("SEMESTER");
-                String banyak_bulan = data.getString("pembayaran_untuk_berapa_bulan");
+                String banyak_bulan = data.getString("bulan");
                 String uang_bayar = data.getString("uangbayar");
                 
-                String[] row = {id,nis,nama,kelas,banyak_bulan,uang_bayar};
+                String[] row = {id,nis,kelas,banyak_bulan,uang_bayar};
                 tabmode.addRow(row);
             }
         } catch (Exception e) {
+            System.out.println("Error : " + e);
         }
     }
     
     public RiwayatPembayaran() {
         initComponents();
+        setExtendedState(MAXIMIZED_BOTH);
         comboboxSemester.removeAllItems();
         comboboxSemester.addItem("Ganjil");
         comboboxSemester.addItem("Genap");

@@ -157,6 +157,7 @@ public class BayarSPP extends javax.swing.JFrame implements interface_BayarSPP {
 
     public BayarSPP() {
         initComponents();
+        setExtendedState(MAXIMIZED_BOTH);
         comboboxNIS.removeAllItems();
         comboboxNIS.addItem("Pilih NIS : ");
         getNIS();
