@@ -5,6 +5,7 @@
  */
 package tampilan;
 
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -57,6 +58,7 @@ public class data_siswa extends javax.swing.JFrame {
     
     public data_siswa() {
         initComponents();
+        this.getContentPane().setBackground(Color.yellow);
         setExtendedState(MAXIMIZED_BOTH);
         dataTable();
     }
