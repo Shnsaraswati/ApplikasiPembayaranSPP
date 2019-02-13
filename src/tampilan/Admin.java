@@ -5,7 +5,7 @@
  */
 package tampilan;
 
-import java.awt.Color;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +20,6 @@ public class Admin extends javax.swing.JFrame {
    
     public Admin() {
         initComponents();
-        this.getContentPane().setBackground(Color.yellow);
         setExtendedState(MAXIMIZED_BOTH);
     }
 
