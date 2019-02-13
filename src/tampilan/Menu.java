@@ -6,7 +6,7 @@
 package tampilan;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+
 import javax.swing.JPanel;
 
 /**
@@ -21,7 +21,6 @@ public class Menu extends javax.swing.JFrame {
     public Menu() {
        
         initComponents();
-        this.getContentPane().setBackground(Color.yellow);
         setExtendedState(MAXIMIZED_BOTH);
     }
 

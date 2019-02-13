@@ -16,9 +16,8 @@ import java.sql.ResultSet;
 import koneksi.koneksi;
 import koneksi.crud;
 import javax.swing.table.DefaultTableModel;
-
 import Interface.interface_riwayat;
-import java.awt.Color;
+
 
 public class RiwayatPembayaran extends javax.swing.JFrame implements interface_riwayat {
 
@@ -56,8 +55,7 @@ public class RiwayatPembayaran extends javax.swing.JFrame implements interface_r
     
     public RiwayatPembayaran() {
         initComponents();
-        this.getContentPane().setBackground(Color.yellow);
-        setExtendedState(MAXIMIZED_BOTH);
+       setExtendedState(MAXIMIZED_BOTH);
         comboboxSemester.removeAllItems();
         comboboxSemester.addItem("Ganjil");
         comboboxSemester.addItem("Genap");
